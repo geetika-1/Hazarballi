@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Poker Game UI</title>
+    <script>
+        function checkOrientation() {
+            if (window.innerHeight > window.innerWidth && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                document.body.classList.add('portrait-warning');
+            } else {
+                document.body.classList.remove('portrait-warning');
+            }
+        }
+        
+        window.addEventListener('orientationchange', checkOrientation);
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('load', checkOrientation);
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+        * {
+            font-family: 'Orbitron', monospace;
+        }
+
+        :root {
+            --neon-green: #00ff41;
+            --neon-blue: #00d4ff;
+            --neon-purple: #bf00ff;
+            --neon-gold: #ffd700;
+            --dark-bg: #0a0a0a;
+            --card-bg: #1a1a2e;
+            --felt-green: #0f3460;
+        }
+
+        @keyframes neon-glow {
+            0%, 100% {
+                box-shadow: 
+                    0 0 5px var(--neon-gold),
+                    0 0 10px var(--neon-gold),
+                    0 0 20px var(--neon-gold),
+                    0 0 40px var(--neon-gold);
+                text-shadow: 0 0 10px var(--neon-gold);
+            }
+            50% {
+                box-shadow: 
+                    0 0 10px var(--neon-gold),
+                    0 0 20px var(--neon-gold),
+                    0 0 40px var(--neon-gold),
+                    0 0 80px var(--neon-gold);
+                text-shadow: 0 0 20px var(--neon-gold);
+            }
+        }
+
+        @keyframes card-deal {
+            0% {
+                transform: translateX(-200px) rotateY(180deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translateX(0) rotateY(90deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateX(0) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes chip-stack {
+            0% {
+                transform: translateY(100px) scale(0);
+                opacity: 0;
+            }
+            60% {
+                transform: translateY(-10px) scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes hologram-text {
+            0%, 100% {
+                color: var(--neon-blue);
+                text-shadow: 
+                    0 0 5px var(--neon-blue),
+                    0 0 10px var(--neon-blue),
+                    0 0 20px var(--neon-blue);
+            }
+            25% {
+                color: var(--neon-green);
+                text-shadow: 
+                    0 0 5px var(--neon-green),
+                    0 0 10px var(--neon-green),
+                    0 0 20px var(--neon-green);
+            }
+            50% {
+                color: var(--neon-purple);
+                text-shadow: 
+                    0 0 5px var(--neon-purple),
+                    0 0 10px var(--neon-purple),
+                    0 0 20px var(--neon-purple);
+            }
+            75% {
+                color: var(--neon-gold);
+                text-shadow: 
+                    0 0 5px var(--neon-gold),
+                    0 0 10px var(--neon-gold),
+                    0 0 20px var(--neon-gold);
+            }
+        }
+
+        @keyframes digital-flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+            75% { opacity: 0.9; }
+        }
+
+        @keyframes betting-pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 20px rgba(255, 215, 0, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+            }
+        }
+
+        @keyframes scan-line {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes countdown-critical {
+            0%, 100% {
+                color: #ff0040;
+                text-shadow: 0 0 20px #ff0040;
+                transform: scale(1);
+            }
+            50% {
+                color: #fff;
+                text-shadow: 0 0 30px #ff0040;
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes matrix-rain {
+            0% {
+                transform: translateY(-100vh);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        .game-container {
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 65, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(191, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            animation: scan-line 3s linear infinite;
+            z-index: 1;
+        }
+
+        .felt-table {
+            background: 
+                radial-gradient(ellipse at center, #0f5132 0%, #0a3d2a 70%),
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 215, 0, 0.03) 2px,
+                    rgba(255, 215, 0, 0.03) 4px
+                );
+            border: 4px solid;
+            border-image: linear-gradient(45deg, var(--neon-gold), var(--neon-blue), var(--neon-purple), var(--neon-gold)) 1;
+            animation: neon-glow 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        .poker-card {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border: 2px solid #333;
+            border-radius: 12px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.6),
+                inset 0 2px 4px rgba(255, 255, 255, 0.2);
+            animation: card-deal 1s ease-out forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .poker-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-gold), var(--neon-blue));
+            border-radius: 12px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .poker-card:hover::before {
+            opacity: 0.5;
+        }
+
+        .poker-card:nth-child(1) { animation-delay: 0.2s; }
+        .poker-card:nth-child(2) { animation-delay: 0.4s; }
+        .poker-card:nth-child(3) { animation-delay: 0.6s; }
+
+        .mystery-card {
+            background: 
+                linear-gradient(45deg, #1a1a2e, #16213e),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 255, 65, 0.1) 2px,
+                    rgba(0, 255, 65, 0.1) 4px
+                );
+            border: 2px solid var(--neon-green);
+            animation: 
+                card-deal 1s ease-out 0.8s forwards,
+                digital-flicker 2s infinite;
+            box-shadow: 
+                0 0 20px var(--neon-green),
+                inset 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+
+        .chip {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid;
+            position: relative;
+            cursor: pointer;
+            animation: chip-stack 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            transition: all 0.3s ease;
+        }
+
+        .chip::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+        }
+
+        .chip:hover {
+            transform: scale(1.2) translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .chip-5 {
+            background: radial-gradient(circle, #ff6b6b, #d63031);
+            border-color: #ff7675;
+            animation-delay: 0.1s;
+        }
+
+        .chip-10 {
+            background: radial-gradient(circle, #4834d4, #3742fa);
+            border-color: #5352ed;
+            animation-delay: 0.2s;
+        }
+
+        .chip-25 {
+            background: radial-gradient(circle, #26de81, #20bf6b);
+            border-color: #2ed573;
+            animation-delay: 0.3s;
+        }
+
+        .chip-50 {
+            background: radial-gradient(circle, #a55eea, #8854d0);
+            border-color: #a55eea;
+            animation-delay: 0.4s;
+        }
+
+        .chip-500 {
+            background: radial-gradient(circle, #ffd700, #f39c12);
+            border-color: #f1c40f;
+            animation-delay: 0.5s;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .neon-button {
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            border: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px currentColor;
+            box-shadow: 
+                0 0 10px var(--neon-blue),
+                inset 0 0 10px rgba(0, 212, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neon-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .neon-button:hover {
+            color: #fff;
+            box-shadow: 
+                0 0 20px var(--neon-blue),
+                0 0 40px var(--neon-blue),
+                inset 0 0 20px rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .neon-button:hover::before {
+            left: 100%;
+        }
+
+        .neon-button:active {
+            transform: translateY(0);
+        }
+
+        .hologram-display {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--neon-green);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hologram-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 255, 65, 0.03) 2px,
+                    rgba(0, 255, 65, 0.03) 4px
+                );
+            pointer-events: none;
+        }
+
+        .digit-display {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            color: var(--neon-green);
+            text-shadow: 0 0 20px var(--neon-green);
+            animation: digital-flicker 3s infinite;
+        }
+
+        .bet-amount {
+            animation: betting-pulse 2s infinite;
+        }
+
+        .timer-critical {
+            animation: countdown-critical 1s infinite;
+        }
+
+        .stats-bar {
+            height: 4px;
+            background: rgba(0, 255, 65, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stats-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+            border-radius: 2px;
+            animation: digital-flicker 2s infinite;
+        }
+
+        .matrix-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+
+        .matrix-char {
+            position: absolute;
+            color: var(--neon-green);
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            animation: matrix-rain 8s linear infinite;
+        }
+
+        .number-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .number-btn {
+            aspect-ratio: 1;
+            border: 2px solid;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .number-btn:nth-child(1) { border-color: #ff6b6b; color: #ff6b6b; }
+        .number-btn:nth-child(2) { border-color: #4834d4; color: #4834d4; }
+        .number-btn:nth-child(3) { border-color: #26de81; color: #26de81; }
+        .number-btn:nth-child(4) { border-color: #fd79a8; color: #fd79a8; }
+        .number-btn:nth-child(5) { border-color: #a55eea; color: #a55eea; }
+        .number-btn:nth-child(6) { border-color: #00b894; color: #00b894; }
+        .number-btn:nth-child(7) { border-color: #fdcb6e; color: #fdcb6e; }
+        .number-btn:nth-child(8) { border-color: #6c5ce7; color: #6c5ce7; }
+        .number-btn:nth-child(9) { border-color: #fd79a8; color: #fd79a8; }
+        .number-btn:nth-child(10) { border-color: #00cec9; color: #00cec9; }
+
+        .number-btn:hover {
+            background: currentColor;
+            color: #000;
+            box-shadow: 0 0 30px currentColor;
+            transform: scale(1.1);
+        }
+
+        .selected {
+            background: currentColor !important;
+            color: #000 !important;
+            box-shadow: 0 0 30px currentColor !important;
+            animation: betting-pulse 1s infinite;
+        }
+
+        .portrait-warning::before {
+            content: "🎮 Rotate device for optimal gaming experience! 🔄";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            color: var(--neon-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            z-index: 9999;
+            padding: 2rem;
+            animation: hologram-text 3s infinite;
+        }
+
+        .history-item {
+            display: inline-block;
+            animation: chip-stack 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+
+        .history-item:nth-child(1) { animation-delay: 0.1s; }
+        .history-item:nth-child(2) { animation-delay: 0.2s; }
+        .history-item:nth-child(3) { animation-delay: 0.3s; }
+        .history-item:nth-child(4) { animation-delay: 0.4s; }
+        .history-item:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Mobile Optimizations */
+        @media screen and (max-width: 1024px) {
+            .game-container { padding: 1rem; }
+            .chip { width: 50px; height: 50px; }
+            .poker-card { width: 80px; height: 100px; }
+            .number-btn { font-size: 1rem; }
+        }
+
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            .game-container { padding: 0.5rem; }
+            .poker-card { width: 60px; height: 75px; }
+        }
+    </style>
+</head>
+<body class="bg-black min-h-screen overflow-hidden">
+    <div class="game-container min-h-screen p-4 relative">
+        <!-- Matrix Background Effect -->
+        <div class="matrix-bg" id="matrixBg"></div>
+
+        <div class="felt-table rounded-3xl p-6 w-full max-w-7xl mx-auto relative z-10">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center space-x-6">
+                    <!-- Chip Balance -->
+                    <div class="hologram-display rounded-xl px-6 py-4">
+                        <div class="text-center">
+                            <i class="fas fa-coins text-2xl mb-2" style="color: var(--neon-gold); text-shadow: 0 0 20px var(--neon-gold);"></i>
+                            <div class="text-sm font-bold" style="color: var(--neon-gold);">CHIPS</div>
+                            <div class="digit-display text-3xl font-black">2,250</div>
+                        </div>
+                    </div>
+
+                    <!-- Game Title -->
+                    <div class="text-2xl font-black" style="animation: hologram-text 4s infinite;">
+                        <i class="fas fa-dice-five mr-3"></i>
+                        <span class="hidden lg:inline">POKER NUMBER GUESS</span>
+                        <span class="lg:hidden">POKER GUESS</span>
+                        <i class="fas fa-crown ml-3"></i>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- Game History -->
+                    <div class="hologram-display rounded-lg px-4 py-2">
+                        <div class="text-xs font-bold mb-2" style="color: var(--neon-blue);">LAST RESULTS</div>
+                        <div class="flex space-x-2">
+                            <div class="history-item bg-red-600 rounded px-2 py-1 text-xs font-bold text-white">1</div>
+                            <div class="history-item bg-blue-600 rounded px-2 py-1 text-xs font-bold text-white">8</div>
+                            <div class="history-item bg-green-600 rounded px-2 py-1 text-xs font-bold text-white">3</div>
+                            <div class="history-item bg-purple-600 rounded px-2 py-1 text-xs font-bold text-white">7</div>
+                            <div class="history-item bg-orange-600 rounded px-2 py-1 text-xs font-bold text-white">9</div>
+                        </div>
+                    </div>
+
+                    <!-- Exit Button -->
+                    <button class="neon-button rounded-lg px-4 py-2 font-bold">
+                        <i class="fas fa-sign-out-alt text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Main Game Area -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Card Display -->
+                    <div class="hologram-display rounded-2xl p-8 text-center">
+                        <div class="text-xl font-bold mb-6" style="color: var(--neon-blue); text-shadow: 0 0 20px var(--neon-blue);">
+                            <i class="fas fa-eye mr-2"></i>REVEALED CARDS<i class="fas fa-eye ml-2"></i>
+                        </div>
+                        
+                        <div class="flex justify-center items-center space-x-8 mb-6">
+                            <div class="poker-card w-32 h-40 flex items-center justify-center">
+                                <div class="text-6xl font-black text-red-600">4</div>
+                            </div>
+                            <div class="poker-card w-32 h-40 flex items-center justify-center">
+                                <div class="text-6xl font-black text-blue-600">9</div>
+                            </div>
+                            <div class="mystery-card w-32 h-40 rounded-xl flex flex-col items-center justify-center">
+                                <i class="fas fa-question text-4xl mb-2" style="color: var(--neon-green);"></i>
+                                <div class="text-lg font-bold" style="color: var(--neon-green);">GUESS</div>
+                                <div class="text-lg font-bold" style="color: var(--neon-green);">THIS!</div>
+                            </div>
+                        </div>
+
+                        <div class="text-lg" style="color: var(--neon-gold);">
+                            <i class="fas fa-bullseye mr-2"></i>
+                            Predict the mystery number and win big!
+                        </div>
+                    </div>
+
+                    <!-- Current Bet Display -->
+                    <div class="hologram-display rounded-xl p-6 text-center bet-amount">
+                        <div class="text-lg font-bold mb-2" style="color: var(--neon-purple);">CURRENT BET</div>
+                        <div class="digit-display text-5xl font-black mb-2">125</div>
+                        <div style="color: var(--neon-blue);">Selected Number: <span class="digit-display text-2xl" id="selectedNumber">None</span></div>
+                    </div>
+
+                    <!-- Game Controls -->
+                    <div class="flex flex-wrap justify-between items-center gap-4">
+                        <div class="flex flex-wrap gap-3">
+                            <button class="neon-button rounded-lg px-6 py-3 font-bold">
+                                <i class="fas fa-plus mr-2"></i>DOUBLE
+                            </button>
+                            <button class="neon-button rounded-lg px-6 py-3 font-bold">
+                                <i class="fas fa-redo mr-2"></i>REPEAT
+                            </button>
+                            <button class="neon-button rounded-lg px-6 py-3 font-bold">
+                                <i class="fas fa-eraser mr-2"></i>CLEAR
+                            </button>
+                        </div>
+                        
+                        <div class="hologram-display rounded-xl px-6 py-4">
+                            <div class="text-sm font-bold mb-1" style="color: var(--neon-gold);">TIME LEFT</div>
+                            <div class="digit-display text-3xl font-black" id="gameTimer">00:15</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Betting Panel -->
+                <div class="space-y-4">
+                    <!-- Number Selection -->
+                    <div class="hologram-display rounded-xl p-4">
+                        <div class="text-lg font-bold mb-4 text-center" style="color: var(--neon-gold);">
+                            <i class="fas fa-crosshairs mr-2"></i>SELECT NUMBER
+                        </div>
+                        <div class="number-selector">
+                            <button class="number-btn" data-number="0">0</button>
+                            <button class="number-btn" data-number="1">1</button>
+                            <button class="number-btn" data-number="2">2</button>
+                            <button class="number-btn" data-number="3">3</button>
+                            <button class="number-btn" data-number="4">4</button>
+                            <button class="number-btn" data-number="5">5</button>
+                            <button class="number-btn" data-number="6">6</button>
+                            <button class="number-btn" data-number="7">7</button>
+                            <button class="number-btn" data-number="8">8</button>
+                            <button class="number-btn" data-number="9">9</button>
+                        </div>
+                    </div>
+
+                    <!-- Betting Chips -->
+                    <div class="hologram-display rounded-xl p-4">
+                        <div class="text-lg font-bold mb-4 text-center" style="color: var(--neon-gold);">
+                            <i class="fas fa-coins mr-2"></i>BET AMOUNT
+                        </div>
+                        <div class="grid grid-cols-5 gap-3 justify-items-center">
+                            <div class="chip chip-5 flex items-center justify-center text-white font-bold" data-value="5">5</div>
+                            <div class="chip chip-10 flex items-center justify-center text-white font-bold" data-value="10">10</div>
+                            <div class="chip chip-25 flex items-center justify-center text-white font-bold" data-value="25">25</div>
+                            <div class="chip chip-50 flex items-center justify-center text-white font-bold" data-value="50">50</div>
+                            <div class="chip chip-500 flex items-center justify-center text-black font-bold" data-value="500">500</div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Bets -->
+                    <div class="hologram-display rounded-xl p-4">
+                        <div class="text-lg font-bold mb-3 text-center" style="color: var(--neon-gold);">QUICK BETS</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button class="neon-button rounded-lg py-2 px-3 font-bold text-sm" data-quick="5">MIN (5)</button>
+                            <button class="neon-button rounded-lg py-2 px-3 font-bold text-sm" data-quick="25">LOW (25)</button>
+                            <button class="neon-button rounded-lg py-2 px-3 font-bold text-sm" data-quick="100">MID (100)</button>
+                            <button class="neon-button rounded-lg py-2 px-3 font-bold text-sm" data-quick="500" style="border-color: var(--neon-gold); color: var(--neon-gold);">MAX (500)</button>
+                        </div>
+                    </div>
+
+                    <!-- Game Stats -->
+                    <div class="hologram-display rounded-xl p-4">
+                        <div class="text-lg font-bold mb-3 text-center" style="color: var(--neon-gold);">STATISTICS</div>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between

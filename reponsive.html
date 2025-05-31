@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vegas Royale Poker Game</title>
+    <script>
+        function checkOrientation() {
+            if (window.innerHeight > window.innerWidth && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                document.body.classList.add('portrait-warning');
+            } else {
+                document.body.classList.remove('portrait-warning');
+            }
+        }
+        
+        window.addEventListener('orientationchange', checkOrientation);
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('load', checkOrientation);
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cinzel:wght@400;600;900&display=swap');
+
+        * {
+            font-family: 'Cinzel', serif;
+        }
+
+        :root {
+            --royal-gold: #FFD700;
+            --deep-red: #8B0000;
+            --casino-green: #006400;
+            --diamond-white: #F8F8FF;
+            --velvet-purple: #4B0082;
+            --copper-bronze: #CD7F32;
+            --rich-black: #000000;
+            --pearl-white: #F5F5DC;
+        }
+
+        @keyframes royal-glow {
+            0%, 100% {
+                box-shadow: 
+                    0 0 20px var(--royal-gold),
+                    0 0 40px var(--royal-gold),
+                    inset 0 0 20px rgba(255, 215, 0, 0.1);
+            }
+            50% {
+                box-shadow: 
+                    0 0 30px var(--royal-gold),
+                    0 0 60px var(--royal-gold),
+                    inset 0 0 30px rgba(255, 215, 0, 0.2);
+            }
+        }
+
+        @keyframes diamond-sparkle {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.8;
+            }
+            25% {
+                transform: scale(1.1) rotate(90deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2) rotate(180deg);
+                opacity: 0.9;
+            }
+            75% {
+                transform: scale(1.1) rotate(270deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes card-flip {
+            0% {
+                transform: perspective(600px) rotateY(180deg) scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: perspective(600px) rotateY(90deg) scale(0.9);
+                opacity: 0.5;
+            }
+            100% {
+                transform: perspective(600px) rotateY(0deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes chip-stack-bounce {
+            0% {
+                transform: translateY(100px) scale(0) rotate(180deg);
+                opacity: 0;
+            }
+            70% {
+                transform: translateY(-20px) scale(1.2) rotate(-10deg);
+                opacity: 1;
+            }
+            85% {
+                transform: translateY(5px) scale(0.9) rotate(5deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes velvet-pulse {
+            0%, 100% {
+                background: linear-gradient(45deg, var(--deep-red), var(--velvet-purple));
+                transform: scale(1);
+            }
+            50% {
+                background: linear-gradient(45deg, var(--velvet-purple), var(--deep-red));
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes royal-text-glow {
+            0%, 100% {
+                color: var(--royal-gold);
+                text-shadow: 
+                    0 0 10px var(--royal-gold),
+                    0 0 20px var(--royal-gold),
+                    0 0 30px var(--royal-gold);
+            }
+            33% {
+                color: var(--diamond-white);
+                text-shadow: 
+                    0 0 10px var(--diamond-white),
+                    0 0 20px var(--diamond-white),
+                    0 0 30px var(--diamond-white);
+            }
+            66% {
+                color: var(--copper-bronze);
+                text-shadow: 
+                    0 0 10px var(--copper-bronze),
+                    0 0 20px var(--copper-bronze),
+                    0 0 30px var(--copper-bronze);
+            }
+        }
+
+        @keyframes floating-diamonds {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(0px) rotate(360deg);
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes countdown-urgent {
+            0%, 100% {
+                color: var(--deep-red);
+                text-shadow: 0 0 30px var(--deep-red);
+                transform: scale(1);
+            }
+            50% {
+                color: var(--diamond-white);
+                text-shadow: 0 0 40px var(--deep-red);
+                transform: scale(1.3);
+            }
+        }
+
+        @keyframes luxury-shimmer {
+            0% {
+                background-position: -100% 0;
+            }
+            100% {
+                background-position: 100% 0;
+            }
+        }
+
+        .casino-container {
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(139, 0, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(75, 0, 130, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #1a0000 0%, #2d1b69 50%, #000000 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .casino-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(255, 215, 0, 0.02) 50px,
+                    rgba(255, 215, 0, 0.02) 52px
+                );
+            pointer-events: none;
+        }
+
+        .velvet-table {
+            background: 
+                radial-gradient(ellipse at center, var(--casino-green) 0%, #003300 80%),
+                linear-gradient(45deg, 
+                    transparent 25%, 
+                    rgba(255, 215, 0, 0.1) 25%, 
+                    rgba(255, 215, 0, 0.1) 50%, 
+                    transparent 50%
+                );
+            background-size: 100% 100%, 20px 20px;
+            border: 6px solid;
+            border-image: linear-gradient(45deg, var(--royal-gold), var(--copper-bronze), var(--royal-gold)) 1;
+            animation: royal-glow 4s ease-in-out infinite;
+            position: relative;
+            box-shadow: 
+                inset 0 0 50px rgba(255, 215, 0, 0.1),
+                0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .velvet-table::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        .luxury-card {
+            background: 
+                linear-gradient(145deg, var(--diamond-white), #e8e8e8),
+                radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.1), transparent);
+            border: 3px solid var(--royal-gold);
+            border-radius: 16px;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.7),
+                inset 0 3px 6px rgba(255, 255, 255, 0.3),
+                0 0 20px rgba(255, 215, 0, 0.3);
+            animation: card-flip 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .luxury-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--royal-gold), transparent, var(--royal-gold));
+            border-radius: 16px;
+            z-index: -1;
+            animation: luxury-shimmer 3s linear infinite;
+        }
+
+        .luxury-card:nth-child(1) { animation-delay: 0.3s; }
+        .luxury-card:nth-child(2) { animation-delay: 0.6s; }
+        .luxury-card:nth-child(3) { animation-delay: 0.9s; }
+
+        .mystery-card {
+            background: 
+                linear-gradient(45deg, var(--velvet-purple), var(--deep-red)),
+                repeating-conic-gradient(from 0deg, transparent 0deg, rgba(255, 215, 0, 0.1) 45deg, transparent 90deg);
+            border: 3px solid var(--royal-gold);
+            animation: 
+                card-flip 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.2s forwards,
+                velvet-pulse 3s infinite;
+            box-shadow: 
+                0 0 40px var(--royal-gold),
+                inset 0 0 30px rgba(255, 215, 0, 0.2);
+        }
+
+        .casino-chip {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 4px solid;
+            position: relative;
+            text-align: center;
+            color: var(--diamond-white);
+            cursor: pointer;
+            animation: chip-stack-bounce 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        .casino-chip::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 70%;
+            height: 70%;
+            border: 3px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .casino-chip::after {
+            content: '♦';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            animation: diamond-sparkle 2s infinite;
+        }
+
+        .casino-chip:hover {
+            transform: scale(1.3) translateY(-15px) rotate(360deg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        .chip-red {
+            background: radial-gradient(circle, #ff4757, var(--deep-red));
+            border-color: #ff6b7a;
+            animation-delay: 0.1s;
+        }
+
+        .chip-blue {
+            background: radial-gradient(circle, #3742fa, #2f3542);
+            border-color: #5352ed;
+            animation-delay: 0.2s;
+        }
+
+        .chip-green {
+            background: radial-gradient(circle, #2ed573, var(--casino-green));
+            border-color: #7bed9f;
+            animation-delay: 0.3s;
+        }
+
+        .chip-purple {
+            background: radial-gradient(circle, #a55eea, var(--velvet-purple));
+            border-color: #c44569;
+            animation-delay: 0.4s;
+        }
+
+        .chip-gold {
+            background: radial-gradient(circle, var(--royal-gold), var(--copper-bronze));
+            border-color: #f1c40f;
+            animation-delay: 0.5s;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+        }
+
+        .royal-button {
+            background: linear-gradient(135deg, var(--royal-gold), var(--copper-bronze));
+            border: 3px solid var(--diamond-white);
+            color: var(--rich-black);
+            font-weight: 900;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+            box-shadow: 
+                0 8px 25px rgba(255, 215, 0, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .royal-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            transition: left 0.6s;
+        }
+
+        .royal-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 15px 35px rgba(255, 215, 0, 0.6),
+                inset 0 2px 4px rgba(255, 255, 255, 0.4);
+            background: linear-gradient(135deg, #ffed4e, var(--royal-gold));
+        }
+
+        .royal-button:hover::before {
+            left: 100%;
+        }
+
+        .royal-button:active {
+            transform: translateY(-1px);
+        }
+
+        .diamond-display {
+            background: 
+                rgba(0, 0, 0, 0.9),
+                radial-gradient(circle at center, rgba(255, 215, 0, 0.1), transparent);
+            border: 2px solid var(--royal-gold);
+            border-image: linear-gradient(45deg, var(--royal-gold), var(--diamond-white), var(--royal-gold)) 1;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .diamond-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 3px,
+                    rgba(255, 215, 0, 0.05) 3px,
+                    rgba(255, 215, 0, 0.05) 6px
+                );
+            pointer-events: none;
+        }
+
+        .luxury-digits {
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            color: var(--royal-gold);
+            text-shadow: 
+                0 0 10px var(--royal-gold),
+                0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .bet-highlight {
+            animation: royal-glow 2s infinite;
+        }
+
+        .timer-danger {
+            animation: countdown-urgent 1s infinite;
+        }
+
+        .floating-diamond {
+            position: absolute;
+            color: var(--royal-gold);
+            font-size: 1.5rem;
+            animation: floating-diamonds 4s ease-in-out infinite;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .number-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .number-btn {
+            aspect-ratio: 1;
+            border: 3px solid;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 1.4rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+            color: var(--diamond-white);
+        }
+
+        .number-btn::before {
+            content: '♠';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 0.8rem;
+            opacity: 0.3;
+        }
+
+        .number-btn::after {
+            content: '♥';
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 0.8rem;
+            opacity: 0.3;
+        }
+
+        .number-btn:nth-child(odd)::before { content: '♦'; }
+        .number-btn:nth-child(odd)::after { content: '♣'; }
+
+        .number-btn:nth-child(1) { border-color: #ff4757; }
+        .number-btn:nth-child(2) { border-color: #3742fa; }
+        .number-btn:nth-child(3) { border-color: #2ed573; }
+        .number-btn:nth-child(4) { border-color: #ff6348; }
+        .number-btn:nth-child(5) { border-color: #a55eea; }
+        .number-btn:nth-child(6) { border-color: #26de81; }
+        .number-btn:nth-child(7) { border-color: #ffa502; }
+        .number-btn:nth-child(8) { border-color: #7bed9f; }
+        .number-btn:nth-child(9) { border-color: #ff6b7a; }
+        .number-btn:nth-child(10) { border-color: var(--royal-gold); }
+
+        .number-btn:hover {
+            background: linear-gradient(145deg, currentColor, rgba(255, 255, 255, 0.1));
+            color: var(--rich-black);
+            box-shadow: 0 0 40px currentColor;
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .selected {
+            background: linear-gradient(145deg, currentColor, rgba(255, 255, 255, 0.2)) !important;
+            color: var(--rich-black) !important;
+            box-shadow: 0 0 50px currentColor !important;
+            animation: royal-glow 1.5s infinite;
+            transform: scale(1.1);
+        }
+
+        .portrait-warning::before {
+            content: "♠ ♥ Rotate for Royal Gaming Experience! ♦ ♣";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--deep-red), var(--velvet-purple));
+            color: var(--royal-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 900;
+            z-index: 9999;
+            padding: 2rem;
+            animation: royal-text-glow 3s infinite;
+        }
+
+        .history-number {
+            display: inline-block;
+            animation: chip-stack-bounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            border: 2px solid var(--royal-gold);
+            background: linear-gradient(145deg, var(--rich-black), #333);
+        }
+
+        .history-number:nth-child(1) { animation-delay: 0.1s; }
+        .history-number:nth-child(2) { animation-delay: 0.2s; }
+        .history-number:nth-child(3) { animation-delay: 0.3s; }
+        .history-number:nth-child(4) { animation-delay: 0.4s; }
+        .history-number:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Mobile Optimizations */
+        @media screen and (max-width: 1024px) {
+            .casino-container { padding: 1rem; }
+            .casino-chip { width: 60px; height: 60px; }
+            .luxury-card { width: 90px; height: 110px; }
+            .number-btn { font-size: 1.2rem; }
+        }
+
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            .casino-container { padding: 0.5rem; }
+            .luxury-card { width: 70px; height: 85px; }
+        }
+    </style>
+</head>
+<body class="bg-black min-h-screen overflow-scroll">
+    <div class="casino-container min-h-screen p-6 relative">
+        <!-- Floating Diamonds -->
+        <div class="floating-diamond" style="top: 10%; left: 5%; animation-delay: 0s;">♦</div>
+        <div class="floating-diamond" style="top: 20%; right: 10%; animation-delay: 1s;">♠</div>
+        <div class="floating-diamond" style="bottom: 30%; left: 8%; animation-delay: 2s;">♥</div>
+        <div class="floating-diamond" style="bottom: 15%; right: 5%; animation-delay: 3s;">♣</div>
+
+        <div class="velvet-table rounded-3xl p-8 w-full max-w-7xl mx-auto relative z-10">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex items-center space-x-8">
+                    <!-- Chip Balance -->
+                    <div class="diamond-display rounded-xl px-8 py-5">
+                        <div class="text-center">
+                            <i class="fas fa-gem text-3xl mb-3" style="color: var(--royal-gold); text-shadow: 0 0 20px var(--royal-gold); animation: diamond-sparkle 2s infinite;"></i>
+                            <div class="text-sm font-bold" style="color: var(--royal-gold);">ROYAL CHIPS</div>
+                            <div class="luxury-digits text-4xl font-black" id="chipBalance">3,750</div>
+                        </div>
+                    </div>
+
+                    <!-- Game Title -->
+                    <div class="text-3xl font-black" style="animation: royal-text-glow 5s infinite; font-family: 'Playfair Display', serif;">
+                        <i class="fas fa-crown mr-4"></i>
+                        <span class="hidden lg:inline">VEGAS ROYALE POKER</span>
+                        <span class="lg:hidden">VEGAS ROYALE</span>
+                        <i class="fas fa-diamond ml-4"></i>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-6">
+                    <!-- Game History -->
+                    <div class="diamond-display rounded-lg px-6 py-3">
+                        <div class="text-xs font-bold mb-3" style="color: var(--royal-gold);">WINNING NUMBERS</div>
+                        <div class="flex space-x-3">
+                            <div class="history-number rounded-lg px-3 py-2 text-sm font-bold text-white">2</div>
+                            <div class="history-number rounded-lg px-3 py-2 text-sm font-bold text-white">7</div>
+                            <div class="history-number rounded-lg px-3 py-2 text-sm font-bold text-white">1</div>
+                            <div class="history-number rounded-lg px-3 py-2 text-sm font-bold text-white">9</div>
+                            <div class="history-number rounded-lg px-3 py-2 text-sm font-bold text-white">4</div>
+                        </div>
+                    </div>
+
+                    <!-- Exit Button -->
+                    <button class="royal-button rounded-lg px-6 py-3 font-bold">
+                        <i class="fas fa-door-open text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Game Area -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Card Display -->
+                    <div class="diamond-display rounded-2xl p-10 text-center">
+                        <div class="text-2xl font-bold mb-8" style="color: var(--royal-gold); text-shadow: 0 0 20px var(--royal-gold); font-family: 'Playfair Display', serif;">
+                            <i class="fas fa-cards mr-3"></i>ROYAL HAND<i class="fas fa-cards ml-3"></i>
+                        </div>
+                        
+                        <div class="flex justify-center items-center space-x-10 mb-8">
+                            <div class="luxury-card w-36 h-44 flex items-center justify-center">
+                                <div class="text-7xl font-black" style="color: var(--deep-red);">6</div>
+                                <div class="absolute top-3 left-3 text-xl" style="color: var(--deep-red);">♥</div>
+                                <div class="absolute bottom-3 right-3 text-xl transform rotate-180" style="color: var(--deep-red);">♥</div>
+                            </div>
+                            <div class="luxury-card w-36 h-44 flex items-center justify-center">
+                                <div class="text-7xl font-black" style="color: var(--rich-black);">K</div>
+                                <div class="absolute top-3 left-3 text-xl" style="color: var(--rich-black);">♠</div>
+                                <div class="absolute bottom-3 right-3 text-xl transform rotate-180" style="color: var(--rich-black);">♠</div>
+                            </div>
+                            <div class="mystery-card w-36 h-44 rounded-xl flex flex-col items-center justify-center">
+                                <i class="fas fa-question-circle text-5xl mb-4" style="color: var(--royal-gold);"></i>
+                                <div class="text-xl font-bold" style="color: var(--royal-gold);">MYSTERY</div>
+                                <div class="text-lg font-bold" style="color: var(--diamond-white);">CARD</div>
+                            </div>
+                        </div>
+
+                        <div class="text-xl" style="color: var(--royal-gold); font-family: 'Playfair Display', serif;">
+                            <i class="fas fa-magic mr-3"></i>
+                            Predict the royal mystery and claim your fortune!
+                        </div>
+                    </div>
+
+                    <!-- Current Bet Display -->
+                    <div class="diamond-display rounded-xl p-8 text-center bet-highlight">
+                        <div class="text-xl font-bold mb-3" style="color: var(--royal-gold); font-family: 'Playfair Display', serif;">ROYAL WAGER</div>
+                        <div class="luxury-digits text-6xl font-black mb-4" id="currentBet">0</div>
+                        <div style="color: var(--diamond-white);">Selected Number: <span class="luxury-digits text-3xl" id="selectedNumber">None</span></div>
+                    </div>
+
+                    <!-- Game Controls -->
+                    <div class="flex flex-wrap justify-between items-center gap-6">
+                        <div class="flex flex-wrap gap-4">
+                            <button class="royal-button rounded-lg px-8 py-4 font-bold" onclick="doubleUp()">
+                                <i class="fas fa-plus-circle mr-3"></i>DOUBLE UP
+                            </button>
+                            <button class="royal-button rounded-lg px-8 py-4 font-bold" onclick="placeBet()">
+                                <i class="fas fa-play-circle mr-3"></i>PLACE BET
+                            </button>
+                            <button class="royal-button rounded-lg px-8 py-4 font-bold" onclick="clearAll()">
+                                <i class="fas fa-broom mr-3"></i>CLEAR ALL
+                            </button>
+                        </div>
+                        
+                        <div class="diamond-display rounded-xl px-8 py-5">
+                            <div class="text-sm font-bold mb-2" style="color: var(--royal-gold);">TIME REMAINING</div>
+                            <div class="luxury-digits text-4xl font-black" id="gameTimer">00:30</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Betting Panel -->
+                <div class="space-y-8">
+                    <div class="diamond-display rounded-xl p-6">
+                        <div class="text-lg font-bold mb-4" style="color: var(--royal-gold);">SELECT YOUR NUMBER</div>
+                        <div class="number-selector">
+                            <button class="number-btn" onclick="selectNumber(1)">1</button>
+                            <button class="number-btn" onclick="selectNumber(2)">2</button>
+                            <button class="number-btn" onclick="selectNumber(3)">3</button>
+                            <button class="number-btn" onclick="selectNumber(4)">4</button>
+                            <button class="number-btn" onclick="selectNumber(5)">5</button>
+                            <button class="number-btn" onclick="selectNumber(6)">6</button>
+                            <button class="number-btn" onclick="selectNumber(7)">7</button>
+                            <button class="number-btn" onclick="selectNumber(8)">8</button>
+                            <button class="number-btn" onclick="selectNumber(9)">9</button>
+                            <button class="number-btn" onclick="selectNumber(10)">10</button>
+                        </div>
+                    </div>
+
+                    <!-- Betting Chips -->
+                    <div class="flex flex-wrap gap-4 justify-center">
+                        <div class="casino-chip chip-red">5</div>
+                        <div class="casino-chip chip-blue">25</div>
+                        <div class="casino-chip chip-green">50</div>
+                        <div class="casino-chip chip-purple">100</div>
+                        <div class="casino-chip chip-gold">500</div>
+                    </div> 
+
+                  <!-- Quick Bets -->
+                    <div class="diamond-display rounded-xl p-6 mt-8">
+                        <div class="text-lg font-bold mb-4" style="color: var(--royal-gold);">QUICK BETS</div>
+                        <div class="flex flex-wrap gap-4 justify-center">
+                            <button class="royal-button rounded-lg px-6 py-3 font-bold" onclick="selectNumber(1)">MIN(5)</button>
+                            <button class="royal-button rounded-lg px-6 py-3 font-bold" onclick="selectNumber(2)">LOW(25)</button>
+                            <button class="royal-button rounded-lg px-6 py-3 font-bold" onclick="selectNumber(3)">MID(100)</button>
+                            <button class="royal-button rounded-lg px-6 py-3 font-bold" onclick="selectNumber(4)">MAX(500)</button>
+                        </div>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="diamond-display rounded-xl p-6 mt-8">
+                        <div class="text-lg font-bold mb-4" style="color: var(--royal-gold);">STATISTICS</div>
+                        <div class="text-sm" style="color: var(--diamond-white);">
+                            <p>Total Bets Placed: <span class="luxury-digits">0</span></p>
+                            <p>Average Bet Size: <span class="luxury-digits">0</span></p>
+                            <p>Highest Win: <span class="luxury-digits">0</span></p>
+                        </div>
+            </div>
+
+        </div>
+        <!-- Portrait Warning -->
+        <!-- <div class="portrait-warning fixed inset-0 flex items-center justify-center z-50">
+            <div class="text-center text-white p-6 bg-black bg-opacity-70 rounded-lg shadow-lg">
+                <i class="fas fa-exclamation-triangle text-4xl mb-4" style="color: var(--deep-red);"></i>
+                <h2 class="text-2xl font-bold mb-2">Rotate Your Device!</h2>
+                <p class="text-lg">For the best gaming experience, please switch to landscape mode.</p>
+            </div>
+        </div> -->
+    </div>
+    <script>
+        let selectedNumber = null;
+        let currentBet = 0;
+        let chipBalance = 3750;
+        let gameTimer = 30;
+
+        function selectNumber(number) {
+            if (selectedNumber === number) {
+                document.querySelectorAll('.number-btn').forEach(btn => btn.classList.remove('selected'));
+                selectedNumber = null;
+            } else {
+                document.querySelectorAll('.number-btn').forEach(btn => btn.classList.remove('selected'));
+                document.querySelector(`.number-btn:nth-child(${number})`).classList.add('selected');
+                selectedNumber = number;
+            }
+            updateCurrentBet();
+        }
+
+        function updateCurrentBet() {
+            const betAmount = selectedNumber ? selectedNumber * 10 : 0; // Example logic for bet amount
+            currentBet = betAmount;
+            document.getElementById('currentBet').textContent = currentBet.toLocaleString();
+        }
+
+        function doubleUp() {
+            if (currentBet > 0 && chipBalance >= currentBet * 2) {
+                chipBalance -= currentBet;
+                currentBet *= 2;
+                document.getElementById('chipBalance').textContent = chipBalance.toLocaleString();
+                document.getElementById('currentBet').textContent = currentBet.toLocaleString();
+            } else {
+                alert("Insufficient chips to double up!");
+            }
+        }
+
+        function placeBet() {
+            if (currentBet > 0 && chipBalance >= currentBet) {
+                chipBalance -= currentBet;
+                document.getElementById('chipBalance').textContent = chipBalance.toLocaleString();
+                alert(`You placed a bet of ${currentBet.toLocaleString()} on number ${selectedNumber}`);
+                resetGame();
+            } else {
+                alert("Insufficient chips or no bet placed!");
+            }
+        }
+
+        function clearAll() {
+            selectedNumber = null;
+            currentBet = 0;
+            updateCurrentBet();
+            document.querySelectorAll('.number-btn').forEach(btn => btn.classList.remove('selected'));
+        }
+
+        function resetGame() {
+            selectedNumber = null;
+            currentBet = 0;
+            updateCurrentBet();
+            document.querySelectorAll('.number-btn').forEach(btn => btn.classList.remove('selected'));
+        }
+
+        // Game Timer Logic
+        setInterval(() => {
+            if (gameTimer > 0) {
+                gameTimer--;
+                const minutes = Math.floor(gameTimer / 60);
+                const seconds = gameTimer % 60;
+                document.getElementById('gameTimer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                alert("Time's up! Please place your bets quickly.");
+                resetGame();
+                gameTimer = 30; // Reset timer
+            }               
+        }, 1000);
+    </script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+
+<!-- <style>
+        :root {
+            --rich-black: #0d0d0d;
+            --royal-gold: #ffd700;
+            --copper-bronze: #b87333;
+            --diamond-white: #ffffff;
+            --deep-red: #8b0000;
+            --velvet-purple: #800080;
+            --casino-green: #004d00;
+        }
+
+        @keyframes royal-glow {
+            0%, 100% {
+                box-shadow: 
+                    0 0 10px var(--royal-gold),
+                    0 0 20px var(--royal-gold),
+                    inset 0 0 10px rgba(255, 215, 0, 0.1);
+            }
+            25% {
+                transform: scale(1.05) rotate(10deg);
+                box-shadow: 
+                    0 0 20px var(--royal-gold),
+                    0 0 30px var(--royal-gold),
+                    inset 0 0 20px rgba(255, 215, 0, 0.2);
+            }   
+            50% {
+                transform: scale(1) rotate(-10deg);
+                box-shadow: 
+                    0 0 30px var(--royal-gold),
+                    0 0 40px var(--royal-gold),
+                    inset 0 0 30px rgba(255, 215, 0, 0.3);
+            }
+            75% {
+                transform: scale(1.05) rotate(10deg);
+                box-shadow: 
+                    0 0 20px var(--royal-gold),
+                    0 0 30px var(--royal-gold),
+                    inset 0 0 20px rgba(255, 215, 0, 0.2);
+            }   
+            100% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 
+                    0 0 10px var(--royal-gold),
+                    0 0 20px var(--royal-gold),
+                    inset 0 0 10px rgba(255, 215, 0, 0.1);
+            }   
+        }
+        @keyframes chip-stack-bounce {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-20px) scale(1.1);
+            }
+        }
+        @keyframes diamond-sparkle {
+            0%, 100% {
+                background: linear-gradient(45deg, var(--rich-black), var(--royal-gold));
+                transform: scale(1);
+            }
+            25% {
+                background: linear-gradient(45deg, var(--rich-black), var(--deep-red));
+                transform: scale(1.05);
+            }
+            50% {
+                background: linear-gradient(45deg, var(--rich-black), var(--velvet-purple));
+                transform: scale(1.1);
+            }
+            75% {
+                background: linear-gradient(45deg, var(--rich-black), var(--royal-gold));
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes royal-text-glow {
+            0% {
+                color: var(--royal-gold);
+                text-shadow: 
+                    0 0 10px var(--royal-gold),
+                    0 0 20px var(--royal-gold),
+                    0 0 30px var(--royal-gold);
+            }
+            33% {
+                color: var(--diamond-white);
+                text-shadow: 
+                    0 0 10px var(--diamond-white),
+                    0 0 20px var(--diamond-white),
+                    0 0 30px var(--diamond-white);
+            }
+            66% {
+                color: var(--velvet-purple);
+                text-shadow: 
+                    0 0 10px var(--velvet-purple),
+                    0 0 20px var(--velvet-purple),
+                    0 0 30px var(--velvet-purple);
+            }
+            100% {
+                color: var(--royal-gold);
+                text-shadow: 
+                    0 0 10px var(--royal-gold),
+                    0 0 20px var(--royal-gold),
+                    0 0 30px var(--royal-gold);
+            }   
+        }
+        @keyframes velvet-pulse {
+            0%, 100% {
+                background-color: var(--velvet-purple);
+                transform: scale(1);
+            }
+            50% {
+                background-color: var(--deep-red);
+                color: var(--diamond-white);
+                box-shadow: 0 0 20px var(--diamond-white), 0 0 40px var(--diamond-white);
+            }
+        }
+        @keyframes card-flip {
+            0% {
+                transform: perspective(1000px) rotateY(0deg);
+            }
+            50% {
+                transform: perspective(1000px) rotateY(180deg);
+            }
+            100% {
+                transform: perspective(1000px) rotateY(360deg);
+            }
+        }
+        @keyframes countdown-urgent {
+            0%, 100% {
+                color: var(--deep-red);
+                text-shadow: 
+                    0 0 10px var(--deep-red),
+                    0 0 20px var(--deep-red);
+            }
+            50% {
+                color: var(--royal-gold);
+                text-shadow: 
+                    0 0 10px var(--royal-gold),
+                    0 0 20px var(--royal-gold);
+            }
+        }
+        @keyframes floating-diamonds {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-20px) rotate(360deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) rotate(720deg);
+                opacity: 0.3;
+            }
+        }
+        .casino-container {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)),
+                url('https://example.com/casino-background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
+        }           
+        .velvet-table {
+            background: 
+                linear-gradient(145deg, var(--rich-black), var(--velvet-purple)),
+                radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.1), transparent);
+            border: 3px solid var(--royal-gold);
+            border-radius: 24px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.7),
+                inset 0 5px 15px rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .velvet-table::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--royal-gold), transparent, var(--royal-gold));
+            border-radius: 24px;
+            z-index: -1;
+            animation: royal-glow 3s linear infinite;
+        }
+        .luxury-card {
+            background: 
+                linear-gradient(145deg, var(--rich-black), var(--royal-gold)),
+                radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.1), transparent);
+            border: 3px solid var(--royal-gold);
+            border-radius: 16px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.7),
+                inset 0 5px 15px rgba(255, 255, 255, 0.2);
+            animation: 
+                royal-glow 2s infinite,
+                luxury-shimmer 3s linear infinite;
+            position: relative;
+            overflow: hidden;
+            display: flex;  
+            align-items: center;
+            justify-content: center;
+            color: var(--diamond-white);
+            font-family: 'Cinzel', serif;
+            font-weight: 900;   
+        }
+        .luxury-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 215, 0, 0.05) 10px,
+                    rgba(255, 215, 0, 0.05) 20px
+                );
+            opacity: 0.2;
+        }
+        .mystery-card {
+            background: 
+                linear-gradient(145deg, var(--rich-black), var(--velvet-purple)),
+                radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.1), transparent);
+            border: 3px solid var(--royal-gold);
+            border-radius: 16px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.7),
+                inset 0 5px 15px rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--diamond-white);
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+        }
+        .mystery-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 215, 0, 0.05) 10px,
+                    rgba(255, 215, 0, 0.05) 20px
+                );
+            opacity: 0.2;
+        }   
+        .casino-chip {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid;
+            box-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.2),
+                inset 0 0 5px rgba(255, 255, 255, 0.1);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }   
+        .casino-chip:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                0 0 20px rgba(255, 215, 0, 0.4),
+                inset 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+            .chip-red {
+            background: radial-gradient(circle, #ff4757, var(--rich-black));
+            border-color: #ff6348;
+            animation-delay: 0.1s;
+        }
+        </style>
+     -->

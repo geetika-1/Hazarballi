@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poker Number Guessing Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .poker-felt {
+            background: linear-gradient(135deg, #0f5132, #198754);
+        }
+        .chip-btn {
+            transition: transform 0.2s ease;
+        }
+        .chip-btn:hover {
+            transform: scale(1.1);
+        }
+        .number-card {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        .mystery-card {
+            background: linear-gradient(145deg, #6c757d, #495057);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-amber-900 via-amber-800 to-amber-900 min-h-screen flex items-center justify-center p-4">
+    <div class="poker-felt text-white border-8 border-amber-600 rounded-3xl p-8 w-full max-w-6xl shadow-2xl">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center space-x-4">
+                <div class="bg-amber-700 text-white border-4 border-yellow-400 rounded-xl px-6 py-3">
+                    <div class="text-center">
+                        <i class="fas fa-coins text-yellow-300 mb-1"></i>
+                        <div class="text-sm font-semibold">CHIPS</div>
+                        <div class="text-2xl font-bold">2,250</div>
+                    </div>
+                </div>
+                <div class="flex items-center text-xl font-bold text-yellow-300">
+                    <i class="fas fa-dice mr-2"></i>
+                    <span>POKER NUMBER GUESS</span>
+                    <i class="fas fa-question-circle ml-2"></i>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="text-yellow-300 font-bold">
+                    <div class="text-sm">WINNING HISTORY</div>
+                    <div class="flex space-x-2 mt-1">
+                        <div class="bg-red-600 rounded px-2 py-1 text-xs font-bold">1</div>
+                        <div class="bg-blue-600 rounded px-2 py-1 text-xs font-bold">8</div>
+                        <div class="bg-green-600 rounded px-2 py-1 text-xs font-bold">3</div>
+                        <div class="bg-purple-600 rounded px-2 py-1 text-xs font-bold">7</div>
+                        <div class="bg-orange-600 rounded px-2 py-1 text-xs font-bold">9</div>
+                    </div>
+                </div>
+                <button class="bg-red-700 hover:bg-red-800 border-2 border-red-900 rounded-lg px-4 py-2 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex gap-8">
+            <!-- Main Game Area -->
+            <div class="flex-1">
+                <!-- Game Cards Display -->
+                <div class="bg-green-800 border-4 border-yellow-500 rounded-2xl p-8 mb-6 text-center">
+                    <div class="text-yellow-300 font-bold mb-6 text-2xl">
+                        <i class="fas fa-eye mr-2"></i>REVEALED NUMBERS<i class="fas fa-eye ml-2"></i>
+                    </div>
+                    <div class="flex justify-center items-center space-x-8">
+                        <div class="number-card w-32 h-40 rounded-xl flex items-center justify-center text-black font-bold border-4 border-amber-500">
+                            <div class="text-6xl font-extrabold text-red-600">4</div>
+                        </div>
+                        <div class="number-card w-32 h-40 rounded-xl flex items-center justify-center text-black font-bold border-4 border-amber-500">
+                            <div class="text-6xl font-extrabold text-blue-600">9</div>
+                        </div>
+                        <div class="mystery-card w-32 h-40 rounded-xl flex flex-col items-center justify-center text-yellow-300 border-4 border-yellow-500">
+                            <i class="fas fa-question text-4xl mb-2"></i>
+                            <div class="text-lg font-bold">GUESS</div>
+                            <div class="text-lg font-bold">THIS!</div>
+                        </div>
+                    </div>
+                    <div class="mt-6 text-yellow-300 text-lg">
+                        <i class="fas fa-lightbulb mr-2"></i>
+                        What's the third number? Place your bets!
+                    </div>
+                </div>
+
+                <!-- Current Bet Display -->
+                <div class="bg-amber-700 border-4 border-yellow-400 rounded-xl p-6 mb-6 text-center">
+                    <div class="text-yellow-300 font-bold mb-2 text-lg">CURRENT BET</div>
+                    <div class="text-4xl font-bold text-white">125 CHIPS</div>
+                    <div class="text-yellow-300 mt-2">Selected Number: <span class="text-white font-bold text-xl">None</span></div>
+                </div>
+
+                <!-- Game Controls -->
+                <div class="flex justify-between items-center">
+                    <div class="flex space-x-4">
+                        <button class="bg-green-600 hover:bg-green-700 border-2 border-green-800 rounded-lg px-8 py-4 font-bold text-xl shadow-lg transition-colors">
+                            <i class="fas fa-plus mr-2"></i>DOUBLE BET
+                        </button>
+                        <button class="bg-blue-600 hover:bg-blue-700 border-2 border-blue-800 rounded-lg px-8 py-4 font-bold text-xl shadow-lg transition-colors">
+                            <i class="fas fa-redo mr-2"></i>REPEAT LAST
+                        </button>
+                        <button class="bg-red-600 hover:bg-red-700 border-2 border-red-800 rounded-lg px-8 py-4 font-bold text-xl shadow-lg transition-colors">
+                            <i class="fas fa-eraser mr-2"></i>CLEAR BET
+                        </button>
+                    </div>
+                    
+                    <div class="bg-yellow-500 border-4 border-yellow-600 text-black font-extrabold rounded-xl px-8 py-6 text-center">
+                        <div class="text-sm mb-1">TIME TO BET</div>
+                        <div class="text-3xl">
+                            <i class="fas fa-hourglass-half mr-2"></i>00:12
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Betting Panel -->
+            <div class="w-80 flex flex-col space-y-4">
+                <!-- Number Selection -->
+                <div class="bg-green-800 border-4 border-yellow-500 rounded-xl p-4">
+                    <div class="text-yellow-300 font-bold mb-4 text-center text-lg">
+                        <i class="fas fa-target mr-2"></i>PICK YOUR NUMBER
+                    </div>
+                    <div class="grid grid-cols-5 gap-2">
+                        <button class="bg-red-600 hover:bg-red-700 text-white border-2 border-red-800 rounded-lg py-3 px-2 text-xl font-bold transition-colors shadow-lg">0</button>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white border-2 border-blue-800 rounded-lg py-3 px-2 text-xl font-bold transition-colors shadow-lg">1</button>
+                        <button class="bg-green-600 hover:bg-green-700 text-white border-2 border-green-800 rounded-lg py-3 px-2 text-xl font-bold transition-colors shadow-lg">2</button>
+                        <button class="bg-orange-600 hover:bg-orange-700 text-white border-2 border-orange-800 rounded-lg py-3 px-2 text-xl font-bold transition-colors shadow-lg">3</button>
+                        <button class="bg-purple-600 hover:bg-purple-700 text-white border-2 border-purple-800 rounded-lg py-3 px-2 text-xl font-bold transition-colors shadow-lg">4</button>
+                        <button class="bg-pink-600 hover:bg-pink-700 text-white border-2 border-pink-800 rounded-lg py-3 px-2 text-xl font-bold transition-colors shadow-lg">5</button>
+                        <button class="bg-indigo-600 hover:bg-indigo-700 text-white border-2 border-indigo-800 rounded-lg py-3 px-2 text-xl font-bold transition-colors shadow-lg">6</button>
+                        <button class="bg-teal-600 hover:bg-teal-700 text-white border-2 border-teal-800 rounded-lg py-3 px-2 text-xl font-bold transition-colors shadow-lg">7</button>
+                        <button class="bg-rose-600 hover:bg-rose-700 text-white border-2 border-rose-800 rounded-lg py-3 px-2 text-xl font-bold transition-colors shadow-lg">8</button>
+                        <button class="bg-cyan-600 hover:bg-cyan-700 text-white border-2 border-cyan-800 rounded-lg py-3 px-2 text-xl font-bold transition-colors shadow-lg">9</button>
+                    </div>
+                </div>
+
+                <!-- Betting Chips -->
+                <div class="bg-green-800 border-4 border-yellow-500 rounded-xl p-4">
+                    <div class="text-yellow-300 font-bold mb-4 text-center text-lg">
+                        <i class="fas fa-coins mr-2"></i>BETTING CHIPS
+                    </div>
+                    <div class="grid grid-cols-5 gap-3">
+                        <button class="chip-btn w-16 h-16 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                            <img src="./assest/5.png" alt="5 Chips" class="w-full h-full rounded-full"/>
+                        </button>
+                        <button class="chip-btn w-16 h-16 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                            <img src="./assest/casino-chip.png" alt="10 Chips" class="w-full h-full rounded-full"/>
+                        </button>
+                        <button class="chip-btn w-16 h-16 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                            <img src="./assest/25.png" alt="25 Chips" class="w-full h-full rounded-full"/>
+                        </button>
+                        <button class="chip-btn w-16 h-16 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                            <img src="./assest/50.png" alt="50 Chips" class="w-full h-full rounded-full"/>
+                        </button>
+                        <button class="chip-btn w-16 h-16 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                            <img src="./assest/500.png" alt="500 Chips" class="w-full h-full rounded-full"/>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Bet Options -->
+                <div class="bg-green-800 border-4 border-yellow-500 rounded-xl p-4">
+                    <div class="text-yellow-300 font-bold mb-3 text-center">QUICK BETS</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="bg-amber-600 hover:bg-amber-700 border-2 border-amber-800 rounded-lg py-2 px-3 font-bold transition-colors">MIN (5)</button>
+                        <button class="bg-amber-600 hover:bg-amber-700 border-2 border-amber-800 rounded-lg py-2 px-3 font-bold transition-colors">LOW (25)</button>
+                        <button class="bg-amber-600 hover:bg-amber-700 border-2 border-amber-800 rounded-lg py-2 px-3 font-bold transition-colors">MID (100)</button>
+                        <button class="bg-red-700 hover:bg-red-800 border-2 border-red-900 rounded-lg py-2 px-3 font-bold transition-colors">MAX (500)</button>
+                    </div>
+                </div>
+
+                <!-- Game Stats -->
+                <div class="bg-green-800 border-4 border-yellow-500 rounded-xl p-4">
+                    <div class="text-yellow-300 font-bold mb-3 text-center">GAME STATS</div>
+                    <div class="space-y-2 text-white text-sm">
+                        <div class="flex justify-between">
+                            <span>Round:</span>
+                            <span class="font-bold text-yellow-300">#47</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Win Rate:</span>
+                            <span class="font-bold text-green-400">23%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Last Win:</span>
+                            <span class="font-bold">3 (x2.5)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Payout:</span>
+                            <span class="font-bold text-yellow-300">9:1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Place Bet Button -->
+                <button class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 border-4 border-yellow-600 rounded-xl py-4 px-6 font-bold text-xl text-black shadow-lg transition-all transform hover:scale-105">
+                    <i class="fas fa-hand-point-up mr-2"></i>PLACE BET
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
